@@ -4,15 +4,28 @@ const { buildSchema } = require('graphql')
 
 const app = express()
 
+const products = []
+
 app.use(express.json())
 
 app.use('/graphql', graphqlHttp({
     schema: buildSchema(`
+        type Product {
+            _id: ID!
+            title: String!
+            description: String!
+            price: Float!
+        }
+        input ProductInput {
+            title: String!
+            description: String!
+            price: Float!
+        }
         type RootQuery {
-            products: [String!]!
+            products: [Product!]!
         }
         type RootMutation {
-            createProduct(name: String): String
+            createProduct(productInput: ProductInput): Product
         }
         schema {
             query: RootQuery
@@ -21,11 +34,17 @@ app.use('/graphql', graphqlHttp({
     `),
     rootValue: {
         products: () => {
-            return ['Sanduíce', 'Coca', 'Cerveja']
+            return products
         },
         createProduct: (args) => {
-            const productName = args.name
-            return productName
+            const product = {
+                _id: Math.random().toString(),
+                title: args.productInput.title,
+                description: args.productInput.description,
+                price: +args.productInput.price,
+            }
+            products.push(product)
+            return product
         }
     },
     graphiql: true,
