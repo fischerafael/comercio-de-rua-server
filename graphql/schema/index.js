@@ -16,6 +16,11 @@ type User {
     phone: String!
     description: String
 }
+type AuthData {
+    userId: ID!
+    token: String!
+    tokenExpiration: Int!
+}
 input ProductInput {
     title: String!
     description: String!
@@ -31,6 +36,8 @@ input UserInput {
 type RootQuery {
     products: [Product!]!
     users: [User!]!
+    product(email: String!): [Product!]!
+    login(email: String!, password: String!): AuthData!
 }
 type RootMutation {
     createProduct(productInput: ProductInput): Product
