@@ -17,8 +17,7 @@ module.exports = {
     product: async ({ email }) => {
         try {
             const getUserEmail = await User.findOne({ email })
-            if (!getUserEmail) throw new Error('User does not exist')
-            console.log(getUserEmail._id)
+            if (!getUserEmail) throw new Error('User does not exist')            
             const productsOf = await Product.find({ creator: getUserEmail._id }).populate('creator')            
             return (productsOf)
         } catch (err) {
@@ -53,7 +52,7 @@ module.exports = {
             title: args.productInput.title,
             description: args.productInput.description, 
             price: +args.productInput.price,
-            creator: '5ee2409365a32229b048ce1d'
+            creator: req.userId
         })
         try {
             const createdProduct = await product.save()                              
